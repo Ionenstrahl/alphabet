@@ -21,14 +21,6 @@ class Box:
     right: int
     bottom: int
 
-    @property
-    def width(self) -> int:
-        return self.right - self.left + 1
-
-    @property
-    def height(self) -> int:
-        return self.bottom - self.top + 1
-
 
 SLOT_BOXES = (
     Box(0, 0, 975, 1370),
@@ -41,116 +33,116 @@ SLOT_BOXES = (
     Box(3010, 1410, 3999, 2788),
 )
 
-CARD_NAMES_BY_SOURCE = {
+CARD_OUTPUTS_BY_SOURCE = {
     "karteikarten-fur-website": [
-        "a_with_image",
-        "b_with_image",
-        "c_with_image",
-        "d_with_image",
-        "e_with_image",
-        "f_with_image",
-        "g_with_image",
-        "h_with_image",
+        "with_image/a",
+        "with_image/b",
+        "with_image/c",
+        "with_image/d",
+        "with_image/e",
+        "with_image/f",
+        "with_image/g",
+        "with_image/h",
     ],
     "karteikarten-fur-website-1": [
-        "i_with_image",
-        "j_with_image",
-        "k_with_image",
-        "l_with_image",
-        "m_with_image",
-        "n_with_image",
-        "o_with_image",
-        "p_with_image",
+        "with_image/i",
+        "with_image/j",
+        "with_image/k",
+        "with_image/l",
+        "with_image/m",
+        "with_image/n",
+        "with_image/o",
+        "with_image/p",
     ],
     "karteikarten-fur-website-2": [
-        "q_with_image",
-        "r_with_image",
-        "s_with_image",
-        "t_with_image",
-        "u_with_image",
-        "v_with_image",
-        "w_with_image",
-        "x_with_image",
+        "with_image/q",
+        "with_image/r",
+        "with_image/s",
+        "with_image/t",
+        "with_image/u",
+        "with_image/v",
+        "with_image/w",
+        "with_image/x",
     ],
     "karteikarten-fur-website-3": [
-        "y_with_image_yacht",
-        "z_with_image",
-        "au_with_image",
-        "eu_with_image",
-        "ei_with_image",
-        "ch_with_image_dach",
-        "sch_with_image",
-        "sp_with_image",
+        "with_image/y_yacht",
+        "with_image/z",
+        "with_image/au",
+        "with_image/eu",
+        "with_image/ei",
+        "with_image/ch_dach",
+        "with_image/sch",
+        "with_image/sp",
     ],
     "karteikarten-fur-website-4": [
-        "st_with_image",
-        "ae_with_image",
-        "oe_with_image",
-        "ue_with_image",
-        "ch_with_image_milch",
+        "with_image/st",
+        "with_image/ae",
+        "with_image/oe",
+        "with_image/ue",
+        "with_image/ch_milch",
         None,
         None,
         None,
     ],
     "karteikarten-fur-website-5": [
-        "a_without_image",
-        "b_without_image",
-        "c_without_image",
-        "d_without_image",
-        "e_without_image",
-        "f_without_image",
-        "g_without_image",
-        "h_without_image",
+        "without_image/a",
+        "without_image/b",
+        "without_image/c",
+        "without_image/d",
+        "without_image/e",
+        "without_image/f",
+        "without_image/g",
+        "without_image/h",
     ],
     "karteikarten-fur-website-6": [
-        "i_without_image",
-        "j_without_image",
-        "k_without_image",
-        "l_without_image",
-        "m_without_image",
-        "n_without_image",
-        "o_without_image",
-        "p_without_image",
+        "without_image/i",
+        "without_image/j",
+        "without_image/k",
+        "without_image/l",
+        "without_image/m",
+        "without_image/n",
+        "without_image/o",
+        "without_image/p",
     ],
     "karteikarten-fur-website-7": [
-        "q_without_image",
-        "r_without_image",
-        "s_without_image",
-        "t_without_image",
-        "u_without_image",
-        "v_without_image",
-        "w_without_image",
-        "x_without_image",
+        "without_image/q",
+        "without_image/r",
+        "without_image/s",
+        "without_image/t",
+        "without_image/u",
+        "without_image/v",
+        "without_image/w",
+        "without_image/x",
     ],
     "karteikarten-fur-website-8": [
-        "y_without_image",
-        "z_without_image",
-        "ae_without_image",
-        "oe_without_image",
-        "ue_without_image",
-        "ei_without_image",
-        "au_without_image",
-        "eu_without_image",
+        "without_image/y",
+        "without_image/z",
+        "without_image/ae",
+        "without_image/oe",
+        "without_image/ue",
+        "without_image/ei",
+        "without_image/au",
+        "without_image/eu",
     ],
     "karteikarten-fur-website-9": [
-        "sch_without_image",
-        "ch_without_image",
-        "eszett_without_image",
-        "sp_without_image",
-        "st_without_image",
-        "qu_without_image",
+        "without_image/sch",
+        "without_image/ch",
+        "without_image/eszett",
+        "without_image/sp",
+        "without_image/st",
+        "without_image/qu",
         None,
         None,
     ],
     "karteikarten-fur-website-10": [
-        "y_with_image_yoga",
-        "aeu_with_image",
-        "eszett_with_image",
-        "ie_with_image",
+        "with_image/y_yoga",
+        "with_image/aeu",
+        "with_image/eszett",
+        "with_image/ie",
         None,
         None,
-        "ie_without_image",
-        "aeu_without_image",
+        "without_image/ie",
+        "without_image/aeu",
     ],
 }
 
@@ -190,26 +182,25 @@ def has_meaningful_content(card: Image.Image) -> bool:
     return False
 
 
-def target_path_for(card_name: str) -> Path:
-    cluster_dir = "with_image" if "_with_image" in card_name else "without_image"
-    return OUTPUT_DIR / cluster_dir / f"{card_name}.png"
+def target_path_for(relative_stem: str) -> Path:
+    return OUTPUT_DIR / f"{relative_stem}.png"
 
 
 def split_image(path: Path) -> int:
     with Image.open(path).convert("RGBA") as image:
-        base_name = slugify(path.stem)
-        card_names = CARD_NAMES_BY_SOURCE[base_name]
+        source_key = slugify(path.stem)
+        outputs = CARD_OUTPUTS_BY_SOURCE[source_key]
         written = 0
 
-        for card_name, slot_box in zip(card_names, SLOT_BOXES):
-            if card_name is None:
+        for relative_stem, slot_box in zip(outputs, SLOT_BOXES):
+            if relative_stem is None:
                 continue
 
             card = image.crop((slot_box.left, slot_box.top, slot_box.right + 1, slot_box.bottom + 1))
             if not has_meaningful_content(card):
                 continue
 
-            target_path = target_path_for(card_name)
+            target_path = target_path_for(relative_stem)
             target_path.parent.mkdir(parents=True, exist_ok=True)
             card.save(target_path)
             written += 1

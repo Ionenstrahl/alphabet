@@ -4,126 +4,127 @@ import shutil
 import unicodedata
 from pathlib import Path
 
+
 IMAGE_ROOT_DIR = Path("assets/images")
 SOURCE_SHEETS_DIR = IMAGE_ROOT_DIR / "source-sheets"
 CARD_ROOT_DIR = IMAGE_ROOT_DIR / "cards"
 SOUND_ROOT_DIR = Path("assets/sounds")
 
 SOUND_NAME_MAP = {
-    "a": "a_without_image",
-    "apfel": "a_with_image",
-    "ae": "ae_without_image",
-    "aepfel": "ae_with_image",
-    "au": "au_without_image",
-    "auto": "au_with_image",
-    "aeu": "aeu_without_image",
-    "haeuser": "aeu_with_image",
-    "b": "b_without_image",
-    "baum": "b_with_image",
-    "brief": "ie_with_image",
-    "c": "c_without_image",
-    "ch": "ch_without_image",
-    "computer": "c_with_image",
-    "d": "d_without_image",
-    "dach": "ch_with_image_dach",
-    "dorf": "d_with_image",
-    "e": "e_without_image",
-    "ei": "ei_without_image",
-    "eimer": "ei_with_image",
-    "elefant": "e_with_image",
-    "es": "s_without_image",
-    "eu": "eu_without_image",
-    "euro": "eu_with_image",
-    "f": "f_without_image",
-    "fisch": "f_with_image",
-    "g": "g_without_image",
-    "geld": "g_with_image",
-    "h": "h_without_image",
-    "haus": "h_with_image",
-    "hexe": "x_with_image",
-    "i": "i_without_image",
-    "ie": "ie_without_image",
-    "insel": "i_with_image",
-    "j": "j_without_image",
-    "junge": "j_with_image",
-    "k": "k_without_image",
-    "katze": "k_with_image",
-    "l": "l_without_image",
-    "lampe": "l_with_image",
-    "m": "m_without_image",
-    "maus": "m_with_image",
-    "milch": "ch_with_image_milch",
-    "n": "n_without_image",
-    "nase": "n_with_image",
-    "o": "o_without_image",
-    "oe": "oe_without_image",
-    "oel": "oe_with_image",
-    "ohr": "o_with_image",
-    "p": "p_without_image",
-    "pass": "p_with_image",
-    "q": "q_without_image",
-    "qu": "qu_without_image",
-    "qualle": "q_with_image",
-    "r": "r_without_image",
-    "rose": "r_with_image",
-    "s": "s_without_image",
-    "sch": "sch_without_image",
-    "schokolade": "sch_with_image",
-    "sonne": "s_with_image",
-    "sp": "sp_without_image",
-    "spinne": "sp_with_image",
-    "ss": "eszett_without_image",
-    "st": "st_without_image",
-    "stern": "st_with_image",
-    "strasse": "eszett_with_image",
-    "t": "t_without_image",
-    "tisch": "t_with_image",
-    "tuer": "ue_with_image",
-    "u": "u_without_image",
-    "ue": "ue_without_image",
-    "uhr": "u_with_image",
-    "v": "v_without_image",
-    "vogel": "v_with_image",
-    "w": "w_without_image",
-    "wasser": "w_with_image",
-    "x": "x_without_image",
-    "y": "y_without_image",
-    "yacht": "y_with_image_yacht",
-    "yoga": "y_with_image_yoga",
-    "z": "z_without_image",
-    "zitrone": "z_with_image",
+    "a": "without_image/a",
+    "apfel": "with_image/a",
+    "ae": "without_image/ae",
+    "aepfel": "with_image/ae",
+    "aeu": "without_image/aeu",
+    "haeuser": "with_image/aeu",
+    "au": "without_image/au",
+    "auto": "with_image/au",
+    "b": "without_image/b",
+    "baum": "with_image/b",
+    "brief": "with_image/ie",
+    "c": "without_image/c",
+    "ch": "without_image/ch",
+    "computer": "with_image/c",
+    "d": "without_image/d",
+    "dach": "with_image/ch_dach",
+    "dorf": "with_image/d",
+    "e": "without_image/e",
+    "ei": "without_image/ei",
+    "eimer": "with_image/ei",
+    "elefant": "with_image/e",
+    "es": "without_image/s",
+    "eu": "without_image/eu",
+    "euro": "with_image/eu",
+    "f": "without_image/f",
+    "fisch": "with_image/f",
+    "g": "without_image/g",
+    "geld": "with_image/g",
+    "h": "without_image/h",
+    "haus": "with_image/h",
+    "haeuser": "with_image/aeu",
+    "hexe": "with_image/x",
+    "i": "without_image/i",
+    "ie": "without_image/ie",
+    "insel": "with_image/i",
+    "j": "without_image/j",
+    "junge": "with_image/j",
+    "k": "without_image/k",
+    "katze": "with_image/k",
+    "l": "without_image/l",
+    "lampe": "with_image/l",
+    "m": "without_image/m",
+    "maus": "with_image/m",
+    "milch": "with_image/ch_milch",
+    "n": "without_image/n",
+    "nase": "with_image/n",
+    "o": "without_image/o",
+    "oe": "without_image/oe",
+    "oel": "with_image/oe",
+    "ohr": "with_image/o",
+    "p": "without_image/p",
+    "pass": "with_image/p",
+    "q": "without_image/q",
+    "qu": "without_image/qu",
+    "qualle": "with_image/q",
+    "r": "without_image/r",
+    "rose": "with_image/r",
+    "s": "without_image/s",
+    "sch": "without_image/sch",
+    "schokolade": "with_image/sch",
+    "sonne": "with_image/s",
+    "sp": "without_image/sp",
+    "spinne": "with_image/sp",
+    "ss": "without_image/eszett",
+    "st": "without_image/st",
+    "stern": "with_image/st",
+    "strasse": "with_image/eszett",
+    "t": "without_image/t",
+    "tisch": "with_image/t",
+    "tuer": "with_image/ue",
+    "u": "without_image/u",
+    "ue": "without_image/ue",
+    "uhr": "with_image/u",
+    "v": "without_image/v",
+    "vogel": "with_image/v",
+    "w": "without_image/w",
+    "wasser": "with_image/w",
+    "x": "without_image/x",
+    "y": "without_image/y",
+    "yacht": "with_image/y_yacht",
+    "yoga": "with_image/y_yoga",
+    "z": "without_image/z",
+    "zitrone": "with_image/z",
 }
 
 
 def ascii_slug(value: str) -> str:
+    replacements = {
+        "\u00c4": "Ae",
+        "\u00e4": "ae",
+        "\u00d6": "Oe",
+        "\u00f6": "oe",
+        "\u00dc": "Ue",
+        "\u00fc": "ue",
+        "\u1e9e": "ss",
+        "\u00df": "ss",
+    }
     normalized = unicodedata.normalize("NFC", value)
-    normalized = (
-        normalized.replace("Ä", "Ae")
-        .replace("ä", "ae")
-        .replace("Ö", "Oe")
-        .replace("ö", "oe")
-        .replace("Ü", "Ue")
-        .replace("ü", "ue")
-        .replace("ẞ", "ss")
-        .replace("ß", "ss")
-    )
+    for source, target in replacements.items():
+        normalized = normalized.replace(source, target)
     normalized = unicodedata.normalize("NFKD", normalized)
-    normalized = (
-        normalized.replace("Ä", "Ae")
-        .replace("ä", "ae")
-        .replace("Ö", "Oe")
-        .replace("ö", "oe")
-        .replace("Ü", "Ue")
-        .replace("ü", "ue")
-        .replace("ẞ", "ss")
-        .replace("ß", "ss")
-    )
     ascii_value = normalized.encode("ascii", "ignore").decode("ascii")
     return "".join(character for character in ascii_value.lower() if character.isalnum())
 
 
+def simplify_clustered_name(stem: str) -> str:
+    stem = stem.replace("_with_image_", "_")
+    stem = stem.replace("_with_image", "")
+    stem = stem.replace("_without_image", "")
+    return stem
+
+
 def move_source_sheets() -> int:
-    source_paths = list(IMAGE_ROOT_DIR.glob("Karteikarten für Website*.png"))
+    source_paths = list(IMAGE_ROOT_DIR.glob("Karteikarten f\u00fcr Website*.png"))
     if not source_paths:
         return 0
 
@@ -143,22 +144,34 @@ def move_source_sheets() -> int:
     return moved
 
 
-def target_image_path(card_name: str) -> Path:
-    cluster_dir = "with_image" if "_with_image" in card_name else "without_image"
-    return CARD_ROOT_DIR / cluster_dir / f"{card_name}.png"
+def target_image_path(cluster_name: str, stem: str) -> Path:
+    return CARD_ROOT_DIR / cluster_name / f"{simplify_clustered_name(stem)}.png"
 
 
 def normalize_images() -> int:
     moved = 0
-    for cluster_dir in (CARD_ROOT_DIR / "with_image", CARD_ROOT_DIR / "without_image"):
+    cluster_dirs = (CARD_ROOT_DIR / "with_image", CARD_ROOT_DIR / "without_image")
+    for cluster_dir in cluster_dirs:
         cluster_dir.mkdir(parents=True, exist_ok=True)
 
-    image_paths = [path for path in CARD_ROOT_DIR.glob("*.png") if path.is_file()]
+    flat_images = [path for path in CARD_ROOT_DIR.glob("*.png") if path.is_file()]
+    clustered_images = [path for cluster_dir in cluster_dirs for path in cluster_dir.glob("*.png") if path.is_file()]
+    image_paths = flat_images + clustered_images
     if not image_paths:
-        raise RuntimeError("No flat card images found in assets/images/cards")
+        raise RuntimeError("No card images found in assets/images/cards")
 
     for image_path in image_paths:
-        target_path = target_image_path(image_path.stem)
+        if image_path.parent == CARD_ROOT_DIR:
+            if "_with_image" in image_path.stem:
+                cluster_name = "with_image"
+            elif "_without_image" in image_path.stem:
+                cluster_name = "without_image"
+            else:
+                raise RuntimeError(f"Cannot infer cluster from {image_path.name}")
+        else:
+            cluster_name = image_path.parent.name
+
+        target_path = target_image_path(cluster_name, image_path.stem)
         if image_path.resolve() != target_path.resolve():
             if target_path.exists():
                 target_path.unlink()
@@ -168,26 +181,30 @@ def normalize_images() -> int:
     return moved
 
 
-def target_sound_path(card_name: str) -> Path:
-    cluster_dir = "with_image" if "_with_image" in card_name else "without_image"
-    return SOUND_ROOT_DIR / cluster_dir / f"{card_name}.m4a"
+def target_sound_path(relative_stem: str) -> Path:
+    return SOUND_ROOT_DIR / f"{relative_stem}.m4a"
 
 
 def normalize_sounds() -> int:
-    for cluster_dir in (SOUND_ROOT_DIR / "with_image", SOUND_ROOT_DIR / "without_image"):
-        cluster_dir.mkdir(parents=True, exist_ok=True)
-        for existing_file in cluster_dir.glob("*.m4a"):
-            existing_file.unlink()
-
-    sound_paths = [path for path in SOUND_ROOT_DIR.glob("*.m4a") if path.is_file()]
-    if not sound_paths:
-        raise RuntimeError("No root-level source sounds found in assets/sounds")
-
     moved = 0
+    cluster_dirs = (SOUND_ROOT_DIR / "with_image", SOUND_ROOT_DIR / "without_image")
+    for cluster_dir in cluster_dirs:
+        cluster_dir.mkdir(parents=True, exist_ok=True)
+
+    root_sounds = [path for path in SOUND_ROOT_DIR.glob("*.m4a") if path.is_file()]
+    clustered_sounds = [path for cluster_dir in cluster_dirs for path in cluster_dir.glob("*.m4a") if path.is_file()]
+    sound_paths = root_sounds + clustered_sounds
+    if not sound_paths:
+        raise RuntimeError("No sounds found in assets/sounds")
+
     for sound_path in sound_paths:
-        canonical_name = ascii_slug(sound_path.stem)
-        target_card_name = SOUND_NAME_MAP[canonical_name]
-        target_path = target_sound_path(target_card_name)
+        if sound_path.parent == SOUND_ROOT_DIR:
+            canonical_name = ascii_slug(sound_path.stem)
+            relative_stem = SOUND_NAME_MAP[canonical_name]
+        else:
+            relative_stem = f"{sound_path.parent.name}/{simplify_clustered_name(sound_path.stem)}"
+
+        target_path = target_sound_path(relative_stem)
         if sound_path.resolve() != target_path.resolve():
             if target_path.exists():
                 target_path.unlink()
@@ -220,11 +237,11 @@ def verify_assets() -> None:
 def main() -> None:
     moved_sheets = move_source_sheets()
     normalized_images = normalize_images()
-    moved_sounds = normalize_sounds()
+    normalized_sounds = normalize_sounds()
     verify_assets()
     print(f"Moved source sheets: {moved_sheets}")
     print(f"Normalized images: {normalized_images}")
-    print(f"Normalized sounds: {moved_sounds}")
+    print(f"Normalized sounds: {normalized_sounds}")
     print("Assets verified")
 
 
