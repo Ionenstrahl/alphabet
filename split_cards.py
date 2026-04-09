@@ -8,8 +8,9 @@ from pathlib import Path
 from PIL import Image
 
 
-SOURCE_DIR = Path("assets/images")
-OUTPUT_DIR = SOURCE_DIR / "cards"
+IMAGE_ROOT_DIR = Path("assets/images")
+SOURCE_DIR = IMAGE_ROOT_DIR / "source-sheets"
+OUTPUT_DIR = IMAGE_ROOT_DIR / "cards"
 MIN_CONTENT_PIXELS = 2000
 
 
@@ -189,6 +190,11 @@ def has_meaningful_content(card: Image.Image) -> bool:
     return False
 
 
+def target_path_for(card_name: str) -> Path:
+    cluster_dir = "with_image" if "_with_image" in card_name else "without_image"
+    return OUTPUT_DIR / cluster_dir / f"{card_name}.png"
+
+
 def split_image(path: Path) -> int:
     with Image.open(path).convert("RGBA") as image:
         base_name = slugify(path.stem)
@@ -203,7 +209,8 @@ def split_image(path: Path) -> int:
             if not has_meaningful_content(card):
                 continue
 
-            target_path = OUTPUT_DIR / f"{card_name}.png"
+            target_path = target_path_for(card_name)
+            target_path.parent.mkdir(parents=True, exist_ok=True)
             card.save(target_path)
             written += 1
 
@@ -211,15 +218,14 @@ def split_image(path: Path) -> int:
 
 
 def main() -> None:
+    if not SOURCE_DIR.exists() or not any(SOURCE_DIR.glob("*.png")):
+        raise FileNotFoundError("No source sheets found in assets/images/source-sheets")
+
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
-    for existing_file in OUTPUT_DIR.glob("*.png"):
+    for existing_file in OUTPUT_DIR.rglob("*.png"):
         existing_file.unlink()
 
-    image_paths = sorted(
-        path
-        for path in SOURCE_DIR.glob("*.png")
-        if path.is_file() and path.parent != OUTPUT_DIR
-    )
+    image_paths = sorted(path for path in SOURCE_DIR.glob("*.png") if path.is_file())
 
     total_cards = 0
     for image_path in image_paths:
