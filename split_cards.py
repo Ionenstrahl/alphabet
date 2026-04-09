@@ -40,6 +40,119 @@ SLOT_BOXES = (
     Box(3010, 1410, 3999, 2788),
 )
 
+CARD_NAMES_BY_SOURCE = {
+    "karteikarten-fur-website": [
+        "a_with_image",
+        "b_with_image",
+        "c_with_image",
+        "d_with_image",
+        "e_with_image",
+        "f_with_image",
+        "g_with_image",
+        "h_with_image",
+    ],
+    "karteikarten-fur-website-1": [
+        "i_with_image",
+        "j_with_image",
+        "k_with_image",
+        "l_with_image",
+        "m_with_image",
+        "n_with_image",
+        "o_with_image",
+        "p_with_image",
+    ],
+    "karteikarten-fur-website-2": [
+        "q_with_image",
+        "r_with_image",
+        "s_with_image",
+        "t_with_image",
+        "u_with_image",
+        "v_with_image",
+        "w_with_image",
+        "x_with_image",
+    ],
+    "karteikarten-fur-website-3": [
+        "y_with_image_yacht",
+        "z_with_image",
+        "au_with_image",
+        "eu_with_image",
+        "ei_with_image",
+        "ch_with_image_dach",
+        "sch_with_image",
+        "sp_with_image",
+    ],
+    "karteikarten-fur-website-4": [
+        "st_with_image",
+        "ae_with_image",
+        "oe_with_image",
+        "ue_with_image",
+        "ch_with_image_milch",
+        None,
+        None,
+        None,
+    ],
+    "karteikarten-fur-website-5": [
+        "a_without_image",
+        "b_without_image",
+        "c_without_image",
+        "d_without_image",
+        "e_without_image",
+        "f_without_image",
+        "g_without_image",
+        "h_without_image",
+    ],
+    "karteikarten-fur-website-6": [
+        "i_without_image",
+        "j_without_image",
+        "k_without_image",
+        "l_without_image",
+        "m_without_image",
+        "n_without_image",
+        "o_without_image",
+        "p_without_image",
+    ],
+    "karteikarten-fur-website-7": [
+        "q_without_image",
+        "r_without_image",
+        "s_without_image",
+        "t_without_image",
+        "u_without_image",
+        "v_without_image",
+        "w_without_image",
+        "x_without_image",
+    ],
+    "karteikarten-fur-website-8": [
+        "y_without_image",
+        "z_without_image",
+        "ae_without_image",
+        "oe_without_image",
+        "ue_without_image",
+        "ei_without_image",
+        "au_without_image",
+        "eu_without_image",
+    ],
+    "karteikarten-fur-website-9": [
+        "sch_without_image",
+        "ch_without_image",
+        "eszett_without_image",
+        "sp_without_image",
+        "st_without_image",
+        "qu_without_image",
+        None,
+        None,
+    ],
+    "karteikarten-fur-website-10": [
+        "y_with_image_yoga",
+        "aeu_with_image",
+        "eszett_with_image",
+        "ie_with_image",
+        None,
+        None,
+        "ie_without_image",
+        "aeu_without_image",
+    ],
+}
+
 
 def is_green(pixel: tuple[int, int, int, int]) -> bool:
     r, g, b, a = pixel
@@ -79,14 +192,18 @@ def has_meaningful_content(card: Image.Image) -> bool:
 def split_image(path: Path) -> int:
     with Image.open(path).convert("RGBA") as image:
         base_name = slugify(path.stem)
+        card_names = CARD_NAMES_BY_SOURCE[base_name]
         written = 0
 
-        for card_index, slot_box in enumerate(SLOT_BOXES, start=1):
+        for card_name, slot_box in zip(card_names, SLOT_BOXES):
+            if card_name is None:
+                continue
+
             card = image.crop((slot_box.left, slot_box.top, slot_box.right + 1, slot_box.bottom + 1))
             if not has_meaningful_content(card):
                 continue
 
-            target_path = OUTPUT_DIR / f"{base_name}-card-{card_index:02d}.png"
+            target_path = OUTPUT_DIR / f"{card_name}.png"
             card.save(target_path)
             written += 1
 
