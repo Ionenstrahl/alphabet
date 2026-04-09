@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8">
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    >
+    <title>Buchstaben Aussprache</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app">
+      <header class="app-header">
+        <h1>Buchstaben</h1>
+      </header>
+
+      <section class="overview" aria-label="Kartenubersicht">
+        <div id="overview-content"></div>
+      </section>
+    </main>
+
+    <section
+      id="card-screen"
+      class="card-screen hidden"
+      aria-hidden="true"
+      aria-label="Karte"
+    >
+      <button
+        id="close-button"
+        class="icon-button close-button"
+        type="button"
+        aria-label="Ubersicht offnen"
+        title="Ubersicht"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6 18 18M18 6 6 18"></path>
+        </svg>
+      </button>
+
+      <div id="card-stage" class="card-stage">
+        <button
+          id="card-button"
+          class="card-button"
+          type="button"
+          aria-label="Ton abspielen"
+          title="Ton abspielen"
+        >
+          <img id="card-image" alt="">
+        </button>
+      </div>
+
+      <div class="card-actions" aria-label="Kartenaktionen">
+        <button
+          id="random-button"
+          class="icon-button"
+          type="button"
+          aria-label="Zufallskarte"
+          title="Zufallskarte"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path
+              d="M17 3h4v4M3 7h6l4 5 4 5h4M21 17v4h-4M3 17h6l2-2"
+            ></path>
+          </svg>
+        </button>
+
+        <button
+          id="next-button"
+          class="icon-button"
+          type="button"
+          aria-label="Nachste Karte"
+          title="Nachste Karte"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 12h12M13 6l6 6-6 6"></path>
+          </svg>
+        </button>
+      </div>
+    </section>
+
+    <audio id="card-audio" preload="none"></audio>
+
+    <script src="app.js"></script>
+  </body>
+</html>
