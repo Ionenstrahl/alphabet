@@ -7,6 +7,30 @@
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     >
     <title>Buchstaben Aussprache</title>
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="assets/images/favicon/apple-touch-icon.png"
+    >
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assets/images/favicon/favicon-32x32.png"
+    >
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="16x16"
+      href="assets/images/favicon/favicon-16x16.png"
+    >
+    <link rel="icon" href="assets/images/favicon/favicon.ico">
+    <link rel="manifest" href="assets/images/favicon/site.webmanifest">
+    <link
+      rel="stylesheet"
+      href="assets/vendor/fontawesome/css/fontawesome.min.css"
+    >
+    <link rel="stylesheet" href="assets/vendor/fontawesome/css/solid.min.css">
     <link rel="stylesheet" href="styles.css">
   </head>
   <body>
@@ -38,9 +62,7 @@
         aria-label="Ubersicht offnen"
         title="Ubersicht"
       >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M6 6 18 18M18 6 6 18"></path>
-        </svg>
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
       </button>
 
       <div id="card-stage" class="card-stage">
@@ -58,16 +80,12 @@
       <div class="card-actions" aria-label="Kartenaktionen">
         <button
           id="random-button"
-          class="icon-button"
+          class="icon-button random-button"
           type="button"
           aria-label="Zufallskarte"
           title="Zufallskarte"
         >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path
-              d="M17 3h4v4M3 7h6l4 5 4 5h4M21 17v4h-4M3 17h6l2-2"
-            ></path>
-          </svg>
+          <i class="fa-solid fa-shuffle" aria-hidden="true"></i>
         </button>
 
         <button
@@ -77,9 +95,7 @@
           aria-label="Nachste Karte"
           title="Nachste Karte"
         >
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M5 12h12M13 6l6 6-6 6"></path>
-          </svg>
+          <i class="fa-solid fa-arrow-right" aria-hidden="true"></i>
         </button>
       </div>
     </section>

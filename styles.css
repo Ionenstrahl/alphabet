@@ -144,16 +144,27 @@ img {
   background: var(--surface);
   color: var(--text);
   box-shadow: var(--shadow);
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease;
 }
 
-.icon-button svg {
-  width: 1.4rem;
-  height: 1.4rem;
-  stroke: currentColor;
-  stroke-width: 2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  fill: none;
+.icon-button .fa-solid {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.icon-button:active {
+  transform: scale(0.96);
+}
+
+.close-button .fa-solid {
+  font-size: 1.45rem;
+}
+
+.random-button .fa-solid {
+  font-size: 1.25rem;
 }
 
 @media (min-width: 560px) {

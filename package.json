@@ -11,5 +11,8 @@
   "license": "ISC",
   "devDependencies": {
     "playwright": "^1.59.1"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-free": "^7.2.0"
   }
 }
