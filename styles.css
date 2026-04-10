@@ -1,6 +1,6 @@
 :root {
   color-scheme: light;
-  --background: #f6f7f4;
+  --background: #ffffff;
   --surface: #ffffff;
   --text: #111111;
   --muted: #5b5b5b;
@@ -88,7 +88,7 @@ img {
 .grid-card {
   display: block;
   padding: 0;
-  border: 1px solid var(--line);
+  border: none;
   border-radius: var(--radius);
   overflow: hidden;
   background: var(--surface);
