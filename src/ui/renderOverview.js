@@ -15,13 +15,24 @@
   function createOverviewFragment(sectionSequence, cardsBySection, onCardSelected) {
     const fragment = document.createDocumentFragment();
 
-    sectionSequence.forEach((section) => {
+    getOverviewSectionSequence(sectionSequence).forEach((section) => {
       fragment.append(
         createOverviewSection(cardsBySection[section], onCardSelected)
       );
     });
 
     return fragment;
+  }
+
+  function getOverviewSectionSequence(sectionSequence) {
+    const prioritizedSections = ["without_image", "with_image"];
+    const orderedSections = prioritizedSections.filter((section) =>
+      sectionSequence.includes(section)
+    );
+
+    return orderedSections.concat(
+      sectionSequence.filter((section) => !orderedSections.includes(section))
+    );
   }
 
   function createOverviewSection(cards, onCardSelected) {
