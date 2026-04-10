@@ -13,60 +13,96 @@
   );
 
   AppModules.buildCardRepository = function buildCardRepository() {
-    const cardsBySection = Object.fromEntries(
-      sectionSequence.map((section) => [
-        section,
-        buildCardsForSection(section, cardDefinitionsBySection[section]),
-      ])
-    );
-
-    const allCards = Object.values(cardsBySection).flat();
-    const cardsById = new Map(allCards.map((card) => [card.id, card]));
+    const cardsBySection = buildCardsBySection();
+    const orderedSections = sectionSequence.slice();
+    const cardsById = buildCardsById(cardsBySection);
 
     return {
       cardsBySection,
-      sectionSequence: sectionSequence.slice(),
+      sectionSequence: orderedSections,
       findById(cardId) {
-        return cardsById.get(cardId) ?? null;
+        return findCardById(cardId, cardsById);
       },
       getNextCard(card) {
-        if (!card) {
-          return null;
-        }
-
-        const cards = cardsBySection[card.section];
-        const currentIndex = cards.findIndex((item) => item.id === card.id);
-
-        if (currentIndex >= 0 && currentIndex < cards.length - 1) {
-          return cards[currentIndex + 1];
-        }
-
-        const currentSectionIndex = sectionSequence.indexOf(card.section);
-        const nextSection =
-          sectionSequence[(currentSectionIndex + 1) % sectionSequence.length];
-
-        return cardsBySection[nextSection][0] ?? null;
+        return findNextCard(card, cardsBySection, orderedSections);
       },
       getRandomCardInSection(card) {
-        if (!card) {
-          return null;
-        }
-
-        const cards = cardsBySection[card.section];
-        if (cards.length <= 1) {
-          return card;
-        }
-
-        let randomCard = card;
-        while (randomCard.id === card.id) {
-          const randomIndex = Math.floor(Math.random() * cards.length);
-          randomCard = cards[randomIndex];
-        }
-
-        return randomCard;
+        return findRandomCardInSection(card, cardsBySection);
       },
     };
   };
+
+  function buildCardsBySection() {
+    return Object.fromEntries(sectionSequence.map(createSectionEntry));
+  }
+
+  function createSectionEntry(section) {
+    return [
+      section,
+      buildCardsForSection(section, cardDefinitionsBySection[section]),
+    ];
+  }
+
+  function buildCardsById(cardsBySection) {
+    const allCards = Object.values(cardsBySection).flat();
+    return new Map(allCards.map((card) => [card.id, card]));
+  }
+
+  function findCardById(cardId, cardsById) {
+    return cardsById.get(cardId) ?? null;
+  }
+
+  function findNextCard(card, cardsBySection, orderedSections) {
+    if (!card) {
+      return null;
+    }
+
+    const cards = cardsBySection[card.section] ?? [];
+    const nextCardInSection = getNextCardInSection(cards, card.id);
+    if (nextCardInSection) {
+      return nextCardInSection;
+    }
+
+    const nextSection = getNextSection(card.section, orderedSections);
+    return cardsBySection[nextSection]?.[0] ?? null;
+  }
+
+  function getNextCardInSection(cards, currentCardId) {
+    const currentIndex = cards.findIndex((item) => item.id === currentCardId);
+    if (currentIndex < 0 || currentIndex >= cards.length - 1) {
+      return null;
+    }
+
+    return cards[currentIndex + 1];
+  }
+
+  function getNextSection(currentSection, orderedSections) {
+    const currentSectionIndex = orderedSections.indexOf(currentSection);
+    return orderedSections[(currentSectionIndex + 1) % orderedSections.length];
+  }
+
+  function findRandomCardInSection(card, cardsBySection) {
+    if (!card) {
+      return null;
+    }
+
+    const cards = cardsBySection[card.section] ?? [];
+    if (cards.length <= 1) {
+      return card;
+    }
+
+    let randomCard = card;
+    while (randomCard.id === card.id) {
+      randomCard = getRandomCard(cards);
+    }
+
+    return randomCard;
+  }
+
+  function getRandomCard(cards) {
+    const randomIndex = Math.floor(Math.random() * cards.length);
+    return cards[randomIndex];
+  }
 
   function buildCardsForSection(section, definitions) {
     const cards = definitions.map((definition) =>

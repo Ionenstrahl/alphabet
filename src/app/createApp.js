@@ -1,6 +1,11 @@
 (function attachCreateApp(globalObject) {
   const AppModules = (globalObject.AppModules = globalObject.AppModules || {});
   const SWIPE_THRESHOLD = 48;
+  const ACTION_CLOSE = "close";
+  const ACTION_NEXT = "next";
+  const ACTION_RANDOM = "random";
+  const HASH_SYNC_HIDE = "hide";
+  const HASH_SYNC_CLEAR = "clear";
 
   AppModules.createApp = function createApp(
     windowRef = window,
@@ -13,29 +18,38 @@
       documentRef.body
     );
     const { createCardHash, createCardId, parseCardHash } = AppModules.cardHash;
-
-    let currentCard = null;
-    let lastSwipeHandled = false;
-    let touchStart = null;
+    const state = createAppState();
 
     return {
-      start() {
-        AppModules.renderOverview({
-          container: elements.overviewContent,
-          sectionSequence: repository.sectionSequence,
-          cardsBySection: repository.cardsBySection,
-          onCardSelected: openCard,
-        });
-
-        syncFromLocationHash();
-        registerEventListeners();
-      },
+      start,
     };
 
+    function start() {
+      renderOverview();
+      syncFromLocationHash();
+      registerEventListeners();
+    }
+
+    function renderOverview() {
+      AppModules.renderOverview({
+        container: elements.overviewContent,
+        sectionSequence: repository.sectionSequence,
+        cardsBySection: repository.cardsBySection,
+        onCardSelected: openCard,
+      });
+    }
+
     function registerEventListeners() {
+      registerWindowListeners();
+      registerCardScreenListeners();
+    }
+
+    function registerWindowListeners() {
       windowRef.addEventListener("hashchange", syncFromLocationHash);
       windowRef.addEventListener("keydown", handleKeyDown);
+    }
 
+    function registerCardScreenListeners() {
       elements.cardButton.addEventListener("click", handleCardButtonClick);
       elements.closeButton.addEventListener("click", closeCard);
       elements.nextButton.addEventListener("click", showNextCard);
@@ -47,96 +61,64 @@
     }
 
     function handleCardButtonClick() {
-      if (lastSwipeHandled) {
-        lastSwipeHandled = false;
+      if (consumeSwipeHandledFlag(state)) {
         return;
       }
 
-      cardScreenView.playSound(currentCard);
+      cardScreenView.playSound(state.currentCard);
     }
 
     function handleTouchStart(event) {
-      if (event.touches.length !== 1) {
-        touchStart = null;
+      state.touchStart = getTouchStartPoint(event);
+      if (!state.touchStart) {
         return;
       }
 
-      const target = event.target;
-      if (target instanceof Element && target.closest(".icon-button")) {
-        touchStart = null;
-        return;
-      }
-
-      const touch = event.touches[0];
-      touchStart = { x: touch.clientX, y: touch.clientY };
-      lastSwipeHandled = false;
+      state.lastSwipeHandled = false;
     }
 
     function handleTouchEnd(event) {
-      if (!touchStart || event.changedTouches.length !== 1) {
-        touchStart = null;
+      const action = getSwipeAction(state.touchStart, event.changedTouches);
+      state.touchStart = null;
+
+      if (!action) {
         return;
       }
 
-      const touch = event.changedTouches[0];
-      const deltaX = touch.clientX - touchStart.x;
-      const deltaY = touch.clientY - touchStart.y;
-      const absoluteX = Math.abs(deltaX);
-      const absoluteY = Math.abs(deltaY);
-
-      touchStart = null;
-
-      if (Math.max(absoluteX, absoluteY) < SWIPE_THRESHOLD) {
-        return;
-      }
-
-      if (absoluteY > absoluteX && deltaY < -SWIPE_THRESHOLD) {
-        lastSwipeHandled = true;
-        closeCard();
-        return;
-      }
-
-      if (absoluteX > absoluteY && deltaX < -SWIPE_THRESHOLD) {
-        lastSwipeHandled = true;
-        showNextCard();
-        return;
-      }
-
-      if (absoluteX > absoluteY && deltaX > SWIPE_THRESHOLD) {
-        lastSwipeHandled = true;
-        showRandomCard();
-      }
+      state.lastSwipeHandled = true;
+      performNavigationAction(action);
     }
 
     function handleKeyDown(event) {
-      if (!currentCard) {
-        return;
-      }
-
-      if (event.key === "Escape" || event.key === "ArrowUp") {
+      const action = getKeyboardAction(event, state.currentCard);
+      if (action) {
         event.preventDefault();
+        performNavigationAction(action);
+      }
+    }
+
+    function performNavigationAction(action) {
+      if (action === ACTION_CLOSE) {
         closeCard();
         return;
       }
 
-      if (event.key === "ArrowLeft") {
-        event.preventDefault();
+      if (action === ACTION_NEXT) {
         showNextCard();
         return;
       }
 
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
+      if (action === ACTION_RANDOM) {
         showRandomCard();
       }
     }
 
     function showNextCard() {
-      openCard(repository.getNextCard(currentCard));
+      openCard(repository.getNextCard(state.currentCard));
     }
 
     function showRandomCard() {
-      openCard(repository.getRandomCardInSection(currentCard));
+      openCard(repository.getRandomCardInSection(state.currentCard));
     }
 
     function openCard(card) {
@@ -144,42 +126,181 @@
         return;
       }
 
-      const hash = createCardHash(card);
-      if (windowRef.location.hash !== hash) {
-        windowRef.location.hash = hash;
+      if (syncLocationHashToCard(card)) {
         return;
       }
 
-      currentCard = card;
-      cardScreenView.show(card);
+      showCard(card);
     }
 
     function closeCard() {
-      if (windowRef.location.hash) {
-        windowRef.location.hash = "";
+      if (clearLocationHash()) {
         return;
       }
 
-      currentCard = null;
-      cardScreenView.hide();
+      hideCard();
     }
 
     function syncFromLocationHash() {
-      const route = parseCardHash(windowRef.location.hash);
-      if (!route) {
-        currentCard = null;
-        cardScreenView.hide();
+      const syncedCard = getCardFromCurrentHash();
+      if (syncedCard === HASH_SYNC_HIDE) {
+        hideCard();
         return;
       }
 
-      const card = repository.findById(createCardId(route));
-      if (!card) {
+      if (syncedCard === HASH_SYNC_CLEAR) {
         windowRef.location.hash = "";
         return;
       }
 
-      currentCard = card;
+      showCard(syncedCard);
+    }
+
+    function syncLocationHashToCard(card) {
+      const hash = createCardHash(card);
+      if (windowRef.location.hash === hash) {
+        return false;
+      }
+
+      windowRef.location.hash = hash;
+      return true;
+    }
+
+    function clearLocationHash() {
+      if (!windowRef.location.hash) {
+        return false;
+      }
+
+      windowRef.location.hash = "";
+      return true;
+    }
+
+    function getCardFromCurrentHash() {
+      const route = parseCardHash(windowRef.location.hash);
+      if (!route) {
+        return HASH_SYNC_HIDE;
+      }
+
+      return repository.findById(createCardId(route)) ?? HASH_SYNC_CLEAR;
+    }
+
+    function showCard(card) {
+      state.currentCard = card;
       cardScreenView.show(card);
     }
+
+    function hideCard() {
+      state.currentCard = null;
+      cardScreenView.hide();
+    }
   };
+
+  function createAppState() {
+    return {
+      currentCard: null,
+      lastSwipeHandled: false,
+      touchStart: null,
+    };
+  }
+
+  function consumeSwipeHandledFlag(state) {
+    if (!state.lastSwipeHandled) {
+      return false;
+    }
+
+    state.lastSwipeHandled = false;
+    return true;
+  }
+
+  function getTouchStartPoint(event) {
+    if (event.touches.length !== 1 || isIgnoredTouchTarget(event.target)) {
+      return null;
+    }
+
+    return getTouchPoint(event.touches[0]);
+  }
+
+  function isIgnoredTouchTarget(target) {
+    return target instanceof Element && target.closest(".icon-button");
+  }
+
+  function getTouchPoint(touch) {
+    return {
+      x: touch.clientX,
+      y: touch.clientY,
+    };
+  }
+
+  function getSwipeAction(touchStart, changedTouches) {
+    if (!touchStart || changedTouches.length !== 1) {
+      return null;
+    }
+
+    const swipeDelta = createSwipeDelta(touchStart, changedTouches[0]);
+    if (!isSwipePastThreshold(swipeDelta)) {
+      return null;
+    }
+
+    if (isCloseSwipe(swipeDelta)) {
+      return ACTION_CLOSE;
+    }
+
+    if (isNextSwipe(swipeDelta)) {
+      return ACTION_NEXT;
+    }
+
+    if (isRandomSwipe(swipeDelta)) {
+      return ACTION_RANDOM;
+    }
+
+    return null;
+  }
+
+  function createSwipeDelta(touchStart, touch) {
+    const deltaX = touch.clientX - touchStart.x;
+    const deltaY = touch.clientY - touchStart.y;
+
+    return {
+      deltaX,
+      deltaY,
+      absoluteX: Math.abs(deltaX),
+      absoluteY: Math.abs(deltaY),
+    };
+  }
+
+  function isSwipePastThreshold({ absoluteX, absoluteY }) {
+    return Math.max(absoluteX, absoluteY) >= SWIPE_THRESHOLD;
+  }
+
+  function isCloseSwipe({ absoluteX, absoluteY, deltaY }) {
+    return absoluteY > absoluteX && deltaY < -SWIPE_THRESHOLD;
+  }
+
+  function isNextSwipe({ absoluteX, absoluteY, deltaX }) {
+    return absoluteX > absoluteY && deltaX < -SWIPE_THRESHOLD;
+  }
+
+  function isRandomSwipe({ absoluteX, absoluteY, deltaX }) {
+    return absoluteX > absoluteY && deltaX > SWIPE_THRESHOLD;
+  }
+
+  function getKeyboardAction(event, currentCard) {
+    if (!currentCard) {
+      return null;
+    }
+
+    if (event.key === "Escape" || event.key === "ArrowUp") {
+      return ACTION_CLOSE;
+    }
+
+    if (event.key === "ArrowLeft") {
+      return ACTION_NEXT;
+    }
+
+    if (event.key === "ArrowRight") {
+      return ACTION_RANDOM;
+    }
+
+    return null;
+  }
 })(window);

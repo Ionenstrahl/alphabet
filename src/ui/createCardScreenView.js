@@ -7,32 +7,38 @@
   ) {
     return {
       show(card) {
-        stopAudio(audio);
-        cardImage.src = card.imageSrc;
-        cardImage.alt = card.label;
-        cardScreen.classList.remove("hidden");
-        cardScreen.setAttribute("aria-hidden", "false");
-        body.classList.add("card-open");
+        resetAudio(audio);
+        updateCardImage(cardImage, card);
+        setCardScreenVisibility(cardScreen, body, true);
       },
       hide() {
-        stopAudio(audio);
-        cardScreen.classList.add("hidden");
-        cardScreen.setAttribute("aria-hidden", "true");
-        body.classList.remove("card-open");
+        resetAudio(audio);
+        setCardScreenVisibility(cardScreen, body, false);
       },
       playSound(card) {
         if (!card) {
           return;
         }
 
-        stopAudio(audio);
+        resetAudio(audio);
         audio.src = card.soundSrc;
         audio.play().catch(() => {});
       },
     };
   };
 
-  function stopAudio(audio) {
+  function updateCardImage(cardImage, card) {
+    cardImage.src = card.imageSrc;
+    cardImage.alt = card.label;
+  }
+
+  function setCardScreenVisibility(cardScreen, body, isVisible) {
+    cardScreen.classList.toggle("hidden", !isVisible);
+    cardScreen.setAttribute("aria-hidden", isVisible ? "false" : "true");
+    body.classList.toggle("card-open", isVisible);
+  }
+
+  function resetAudio(audio) {
     audio.pause();
     audio.currentTime = 0;
   }
