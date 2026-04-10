@@ -306,10 +306,6 @@ function renderOverview() {
     const sectionElement = document.createElement("section");
     sectionElement.className = "overview-section";
 
-    const heading = document.createElement("h2");
-    heading.textContent = sectionMeta[section].title;
-    sectionElement.append(heading);
-
     const grid = document.createElement("div");
     grid.className = "card-grid";
 

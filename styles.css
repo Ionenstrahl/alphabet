@@ -46,17 +46,6 @@ img {
   padding-bottom: 2rem;
 }
 
-.app-header {
-  padding: 0.5rem 0 1.25rem;
-}
-
-.app-header h1 {
-  margin: 0;
-  font-size: 1.35rem;
-  font-weight: 700;
-  letter-spacing: 0.01em;
-}
-
 .app-footer {
   margin-top: 2rem;
   padding-top: 0.5rem;
@@ -71,12 +60,6 @@ img {
 
 .overview-section + .overview-section {
   margin-top: 1.75rem;
-}
-
-.overview-section h2 {
-  margin: 0 0 0.75rem;
-  font-size: 1rem;
-  font-weight: 700;
 }
 
 .card-grid {
