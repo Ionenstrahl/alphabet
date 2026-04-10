@@ -126,6 +126,8 @@
         return;
       }
 
+      storeOverviewScrollPosition();
+
       if (syncLocationHashToCard(card)) {
         return;
       }
@@ -192,12 +194,35 @@
     function hideCard() {
       state.currentCard = null;
       cardScreenView.hide();
+      restoreOverviewScrollPosition();
+    }
+
+    function storeOverviewScrollPosition() {
+      if (state.currentCard) {
+        return;
+      }
+
+      state.overviewScrollPosition = windowRef.scrollY;
+    }
+
+    function restoreOverviewScrollPosition() {
+      if (state.overviewScrollPosition === null) {
+        return;
+      }
+
+      const scrollPosition = state.overviewScrollPosition;
+      state.overviewScrollPosition = null;
+
+      windowRef.requestAnimationFrame(() => {
+        windowRef.scrollTo(0, scrollPosition);
+      });
     }
   };
 
   function createAppState() {
     return {
       currentCard: null,
+      overviewScrollPosition: null,
       lastSwipeHandled: false,
       touchStart: null,
     };
