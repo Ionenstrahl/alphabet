@@ -64,6 +64,10 @@
         passive: true,
       });
       elements.cardScreen.addEventListener("touchend", handleTouchEnd);
+      elements.qrScreen.addEventListener("touchstart", handleTouchStart, {
+        passive: true,
+      });
+      elements.qrScreen.addEventListener("touchend", handleTouchEnd);
     }
 
     function handleCardButtonClick() {
