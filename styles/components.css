@@ -10,7 +10,8 @@
 
 .grid-card:focus-visible,
 .icon-button:focus-visible,
-.card-button:focus-visible {
+.card-button:focus-visible,
+.footer-action:focus-visible {
   outline: 3px solid #2f6fda;
   outline-offset: 2px;
 }
@@ -30,6 +31,12 @@
 .card-button img {
   width: 100%;
   max-height: calc(100dvh - 9rem);
+  object-fit: contain;
+}
+
+.qr-stage img {
+  width: min(100%, 24rem);
+  max-height: calc(100dvh - 5rem);
   object-fit: contain;
 }
 
@@ -66,4 +73,29 @@
 
 .random-button .fa-solid {
   font-size: 1.25rem;
+}
+
+.footer-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease;
+}
+
+.footer-action .fa-solid {
+  font-size: 1.1rem;
+}
+
+.footer-action:active {
+  transform: scale(0.98);
 }

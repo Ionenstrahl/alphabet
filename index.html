@@ -46,6 +46,16 @@
           Vervielf&auml;ltigung, Ver&ouml;ffentlichung, Bearbeitung und
           &Uuml;bersetzung, bleiben vorbehalten, Carl-Sonnenschein-Haus e.V.
         </p>
+        <button
+          id="open-qr-button"
+          class="footer-action"
+          type="button"
+          aria-label="QR-Code offnen"
+          title="QR-Code offnen"
+        >
+          <i class="fa-solid fa-qrcode" aria-hidden="true"></i>
+          <span>QR-Code offnen</span>
+        </button>
       </footer>
     </main>
 
@@ -100,6 +110,30 @@
       </div>
     </section>
 
+    <section
+      id="qr-screen"
+      class="qr-screen hidden"
+      aria-hidden="true"
+      aria-label="QR-Code"
+    >
+      <button
+        id="qr-close-button"
+        class="icon-button close-button"
+        type="button"
+        aria-label="Ubersicht offnen"
+        title="Ubersicht"
+      >
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+
+      <div class="qr-stage">
+        <img
+          src="assets/images/qr-codes/qr_code_github.png"
+          alt="QR-Code zum GitHub-Projekt"
+        >
+      </div>
+    </section>
+
     <audio id="card-audio" preload="none"></audio>
 
     <script defer src="src/data/cardDefinitions.js"></script>
@@ -109,6 +143,7 @@
     <script defer src="src/ui/getElements.js"></script>
     <script defer src="src/ui/renderOverview.js"></script>
     <script defer src="src/ui/createCardScreenView.js"></script>
+    <script defer src="src/ui/createQrScreenView.js"></script>
     <script defer src="src/app/createApp.js"></script>
     <script defer src="app.js"></script>
   </body>

@@ -1,11 +1,14 @@
 (function attachCreateApp(globalObject) {
   const AppModules = (globalObject.AppModules = globalObject.AppModules || {});
   const SWIPE_THRESHOLD = 48;
+  const VIEW_CARD = "card";
+  const VIEW_QR = "qr";
   const ACTION_CLOSE = "close";
   const ACTION_NEXT = "next";
   const ACTION_RANDOM = "random";
   const HASH_SYNC_HIDE = "hide";
   const HASH_SYNC_CLEAR = "clear";
+  const QR_HASH = "#qr";
 
   AppModules.createApp = function createApp(
     windowRef = window,
@@ -17,6 +20,7 @@
       elements,
       documentRef.body
     );
+    const qrScreenView = AppModules.createQrScreenView(elements, documentRef.body);
     const { createCardHash, createCardId, parseCardHash } = AppModules.cardHash;
     const state = createAppState();
 
@@ -50,10 +54,12 @@
     }
 
     function registerCardScreenListeners() {
+      elements.openQrButton.addEventListener("click", openQr);
       elements.cardButton.addEventListener("click", handleCardButtonClick);
       elements.closeButton.addEventListener("click", closeCard);
       elements.nextButton.addEventListener("click", showNextCard);
       elements.randomButton.addEventListener("click", showRandomCard);
+      elements.qrCloseButton.addEventListener("click", closeCard);
       elements.cardScreen.addEventListener("touchstart", handleTouchStart, {
         passive: true,
       });
@@ -90,7 +96,7 @@
     }
 
     function handleKeyDown(event) {
-      const action = getKeyboardAction(event, state.currentCard);
+      const action = getKeyboardAction(event, state.currentView, state.currentCard);
       if (action) {
         event.preventDefault();
         performNavigationAction(action);
@@ -135,31 +141,49 @@
       showCard(card);
     }
 
+    function openQr() {
+      storeOverviewScrollPosition();
+
+      if (syncLocationHash(QR_HASH)) {
+        return;
+      }
+
+      showQr();
+    }
+
     function closeCard() {
       if (clearLocationHash()) {
         return;
       }
 
-      hideCard();
+      hideCurrentScreen();
     }
 
     function syncFromLocationHash() {
-      const syncedCard = getCardFromCurrentHash();
-      if (syncedCard === HASH_SYNC_HIDE) {
-        hideCard();
+      const syncedRoute = getRouteFromCurrentHash();
+      if (syncedRoute === HASH_SYNC_HIDE) {
+        hideCurrentScreen();
         return;
       }
 
-      if (syncedCard === HASH_SYNC_CLEAR) {
+      if (syncedRoute === HASH_SYNC_CLEAR) {
         windowRef.location.hash = "";
         return;
       }
 
-      showCard(syncedCard);
+      if (syncedRoute.type === VIEW_QR) {
+        showQr();
+        return;
+      }
+
+      showCard(syncedRoute.card);
     }
 
     function syncLocationHashToCard(card) {
-      const hash = createCardHash(card);
+      return syncLocationHash(createCardHash(card));
+    }
+
+    function syncLocationHash(hash) {
       if (windowRef.location.hash === hash) {
         return false;
       }
@@ -177,28 +201,51 @@
       return true;
     }
 
-    function getCardFromCurrentHash() {
+    function getRouteFromCurrentHash() {
+      if (windowRef.location.hash === QR_HASH) {
+        return { type: VIEW_QR };
+      }
+
       const route = parseCardHash(windowRef.location.hash);
       if (!route) {
         return HASH_SYNC_HIDE;
       }
 
-      return repository.findById(createCardId(route)) ?? HASH_SYNC_CLEAR;
+      const card = repository.findById(createCardId(route));
+      if (!card) {
+        return HASH_SYNC_CLEAR;
+      }
+
+      return {
+        type: VIEW_CARD,
+        card,
+      };
     }
 
     function showCard(card) {
+      state.currentView = VIEW_CARD;
       state.currentCard = card;
+      qrScreenView.hide();
       cardScreenView.show(card);
     }
 
-    function hideCard() {
+    function showQr() {
+      state.currentView = VIEW_QR;
       state.currentCard = null;
+      cardScreenView.hide();
+      qrScreenView.show();
+    }
+
+    function hideCurrentScreen() {
+      state.currentView = null;
+      state.currentCard = null;
+      qrScreenView.hide();
       cardScreenView.hide();
       restoreOverviewScrollPosition();
     }
 
     function storeOverviewScrollPosition() {
-      if (state.currentCard) {
+      if (state.currentView) {
         return;
       }
 
@@ -221,6 +268,7 @@
 
   function createAppState() {
     return {
+      currentView: null,
       currentCard: null,
       overviewScrollPosition: null,
       lastSwipeHandled: false,
@@ -309,13 +357,17 @@
     return absoluteX > absoluteY && deltaX > SWIPE_THRESHOLD;
   }
 
-  function getKeyboardAction(event, currentCard) {
-    if (!currentCard) {
+  function getKeyboardAction(event, currentView, currentCard) {
+    if (!currentView) {
       return null;
     }
 
     if (event.key === "Escape" || event.key === "ArrowUp") {
       return ACTION_CLOSE;
+    }
+
+    if (currentView !== VIEW_CARD || !currentCard) {
+      return null;
     }
 
     if (event.key === "ArrowLeft") {
