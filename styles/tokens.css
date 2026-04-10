@@ -1,0 +1,11 @@
+:root {
+  color-scheme: light;
+  --background: #ffffff;
+  --surface: #ffffff;
+  --text: #111111;
+  --muted: #5b5b5b;
+  --line: #d8ddd3;
+  --shadow: 0 10px 28px rgba(17, 17, 17, 0.08);
+  --radius: 18px;
+  --page-width: 72rem;
+}

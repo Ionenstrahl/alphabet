@@ -1,0 +1,69 @@
+.grid-card {
+  display: block;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.grid-card:focus-visible,
+.icon-button:focus-visible,
+.card-button:focus-visible {
+  outline: 3px solid #2f6fda;
+  outline-offset: 2px;
+}
+
+.close-button {
+  justify-self: end;
+}
+
+.card-button {
+  width: min(100%, 32rem);
+  max-height: 100%;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.card-button img {
+  width: 100%;
+  max-height: calc(100dvh - 9rem);
+  object-fit: contain;
+}
+
+.icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow);
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease;
+}
+
+.icon-button .fa-solid {
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.icon-button:active {
+  transform: scale(0.96);
+}
+
+.close-button .fa-solid {
+  font-size: 1.45rem;
+}
+
+.random-button .fa-solid {
+  font-size: 1.25rem;
+}
